@@ -6,6 +6,6 @@ var ipc = electron.ipcMain;
 app.on('ready', function(){
 	var primary;
 	primary = new window({show: false});
-	primary.loadURL('');
+	primary.loadURL('file://' + __dirname + '/info.html');
 	primary.show();
 });
