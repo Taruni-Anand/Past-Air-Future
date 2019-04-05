@@ -19,6 +19,6 @@ app.on('ready', function(){
 		setTimeout(function() {
 				loading.close();
 				primary.maximize();
-			}, 5000); //Load for 5 seconds
+			}, 1000); //Load for 5 seconds
 	})
 });
