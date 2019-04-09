@@ -1,7 +1,10 @@
 {
-  "name": "Past Air Future",
+  "name": "PastAirFuture",
   "version": "1.0.0",
   "devDependencies": {
-	"electron": "^1.4.1"
+    "electron": "^1.4.1"
+  },
+  "scripts": {
+    "start": "index.js"
   }
 }
