@@ -6,8 +6,8 @@ var ipc = electron.ipcMain;
 app.on('ready', function(){
 	var primary;
 	var loading;
-	primary = new window({show: false});
-	loading = new window({width: 400, height: 300, frame: false, transparent: true,});
+	primary = new window({show: false, movable: false, minimizable: false});
+	loading = new window({width: 400, height: 300, frame: false, transparent: true});
 	//Set up loading window
 	loading.show();
 	loading.center();
@@ -19,6 +19,6 @@ app.on('ready', function(){
 		setTimeout(function() {
 				loading.close();
 				primary.maximize();
-			}, 1000); //Load for 5 seconds
+			}, 1500); //Load for 1.5 seconds
 	})
 });
