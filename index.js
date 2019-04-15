@@ -18,7 +18,7 @@ app.on('ready', function(){
 	primary.once('ready-to-show', function(){
 		setTimeout(function() {
 				loading.close();
-				primary.maximize();
+				primary.show();
 			}, 1000); //Load for 5 seconds
 	})
 });
