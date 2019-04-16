@@ -10,43 +10,61 @@
 	font-size: 25px;
 }
 
-.map{
+.map {
 	margin-right: 20px;
 	margin-bottom: 50px;
 	width: 1450px;
 	height: 600px;
-    background-color: lightblue;
-    float: right;
-    overflow: hidden; 
-    display: inline;
+	background-color: lightblue;
+	float: right;
+	overflow: hidden;
+	display: inline;
+	border-radius: 10px;
+	border: 2px;
+	border-color: gray;
+	border-style: solid;
+	border-width: 5px;
 }
 
-.timeline{
+.timeline {
 	margin-right: 20px;
 	width: 1450px;
 	height: 125px;
-    background-color: blue;
-    float: right;
-    overflow: hidden;
-    display: inline;
+	background-color: blue;
+	float: right;
+	overflow: hidden;
+	display: inline;
+	border-radius: 10px;
+	border: 2px;
+	border-color: gray;
+	border-style: solid;
+	border-width: 5px;
 }
 
-.locations{
+.locations {
 	margin-left: 20px;
 	width: 320px;
 	height: 470px;
-    background-color: white;
-    overflow: hidden;
+	background-color: white;
+	overflow: hidden;
+	border-radius: 10px;
+	border: 2px;
+	border-color: gray;
+	border-style: solid;
+	border-width: 5px;
 }
 
-.chemicals{
-	margin-top:20px;
+.chemicals {
+	margin-top: 20px;
 	margin-left: 20px;
 	width: 320px;
 	height: 320px;
-    background-color: white;
-    overflow: hidden;
-    display: inline;
-    float: left;
+	background-color: white;
+	overflow: hidden;
+	display: inline;
+	float: left;
+	border-radius: 10px;
+	border-style: solid;
+	border-width: 5px;
+	border-color: gray;
 }
-
