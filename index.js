@@ -18,7 +18,8 @@ app.on('ready', function(){
 	primary.once('ready-to-show', function(){
 		setTimeout(function() {
 				loading.close();
+				primary.show()
 				primary.maximize();
 			}, 1500); //Load for 1.5 seconds
-	})
+	});
 });
