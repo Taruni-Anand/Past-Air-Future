@@ -6,7 +6,7 @@ var ipc = electron.ipcMain;
 app.on('ready', function(){
 	var primary;
 	var loading;
-	primary = new window({show: false, movable: false, minimizable: false});
+	primary = new window({show: false});
 	loading = new window({width: 400, height: 300, frame: false, transparent: true});
 	//Set up loading window
 	loading.show();
