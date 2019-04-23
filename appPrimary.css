@@ -14,26 +14,23 @@
 
 #container {
 	width: 100%;
-	height: 70%;
+	height: 67%;
 	margin: 0px;
 	padding: 0px;
 	background-repeat: no-repeat;
 	background-size: cover;
 	display: flex;
 	flex-wrap: wrap;
-	overflow: wrap;
 }
 
 /*TITLE BAR*/
 
 .title {
-	margin: 0px;
+	margin-left: 3%;
 	width: 100%;
-	height: 10%;
-	padding: 10px;
 	color: black;
 	font-family: "Times New Roman";
-	font-size: 25px;
+	font-size: 150%;
 	display: block;
 	overflow: hidden;
 }
@@ -41,11 +38,10 @@
 /*LOCATIONS OPTIONS*/
 
 .locations{
-	margin-left: 1%;
+	margin-left: 2%;
 	width: 18%;
 	height: 95%;
-	border: 10px solid grey;
-	position: flex;
+	border: 8px solid grey;
 	justify-content: flex-start;
 	align-content: flex-start;
 	border-radius: 10px;
@@ -65,27 +61,25 @@
 /*MAP*/
 
 .map{
-	width: 75%;
+	width: 73%;
 	height: 95%;
 	margin-left: 2%;
     background-color: lightblue;
-	border: 10px solid grey;
+	border: 8px solid grey;
 	border-radius: 10px;
 	display: flex;
-	right: -20px;
 	overflow: hidden;
 }
 
 /*TIMELINE*/
 
 .timeline{
-	margin: 20px;
-	width: 96%;
+	margin: 2%;
+	width: 94%;
 	height: 10%;
     background-color: white;
-    border: 10px solid grey;
+    border: 8px solid grey;
     border-radius: 10px;
-    position: center;
     overflow: hidden;
 }
 
