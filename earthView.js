@@ -1,6 +1,6 @@
 earth_div = document.getElementById('earth_div')
-
 var earth
+
 function initialize() {
 	earth = new WE.map(earth_div)
 	// earth = new WE.map('earth_div')

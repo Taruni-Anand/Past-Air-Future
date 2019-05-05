@@ -3,19 +3,24 @@
 
 <head>
 	<title>PastAirFuture</title>
+
 	<link rel='stylesheet' href='appPrimary.css'>
-	<script src="http://www.webglearth.com/v2/api.js"></script>
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	<link rel="stylesheet" href="/resources/demos/style.css">
+	
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="http://www.webglearth.com/v2/api.js"></script>
+		
 	<script type="text/javascript">
 		var electron = require('electron');
 		var shell = electron.shell;
 		var ipc = electron.ipcRenderer;
 	</script>
-
+	
 	<script>
 	var earth;
 	function initialize() {
@@ -60,6 +65,7 @@
 		var openDropdown = dropdowns[i];
 		if (openDropdown.classList.contains('show')) {
 			openDropdown.classList.remove('show');
+			console.log("Hello");
 		}
 		}
 	}
@@ -73,6 +79,8 @@
 			Past Air Future 
 		</h1>
 	</main>
+	
+	<button id="button1" onclick="clickHandler()"><h2>HELLO</h2></button>
 
 	<div id="container">
 		<div class ="locations">
@@ -82,7 +90,7 @@
 					<div id="myDropdown" class="dropdown-content">
 					  <a href="#home">Place 1</a>
 					  <a href="#about">Place 2</a>
-					  <a href="#contact">Place 3</a>
+						<a href="#contact">Place 3</a>
 					</div>
 				  </div>
 			</div>
@@ -95,7 +103,7 @@
 
 	<div class ="timeline">
 		<div class="slidecontainer">
-			<input type="range" min="2000" max="2019" value="2015" class="slider" id="myRange">
+			<input type="range" min="2013" max="2019" value="2015" class="slider" id="myRange">
 			<p>Year: <span id="demo"></span></p>
 		  </div>
 	</div>

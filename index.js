@@ -22,4 +22,8 @@ app.on('ready', function() {
 			primary.maximize()
 		}, 1500) //Load for 1.5 seconds
 	})
+
+	mainWindow.webContents.on('did-finish-load', function() {
+		mainWindow.webContents.executeJavaScript("alert('Hello There!');")
+	})
 })

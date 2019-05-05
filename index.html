@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>PastAirFuture</title>
+
+	<link rel='stylesheet' href='style.css'>
+  <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+  <link href="https://fonts.googleapis.com/css?family=Poppins|Roboto+Slab|Slabo+27px" rel="stylesheet">
+  
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <!-- <script src="mongo.js"></script> -->
+	<script src="http://www.webglearth.com/v2/api.js"></script>
+		
+	<script type="text/javascript">
+		var electron = require('electron');
+		var shell = electron.shell;
+		var ipc = electron.ipcRenderer;
+	</script>
+  
+  <script type='javascript' src='slider.js'></script>
+  
+	<script>
+  
+  function runQuery(){
+  var MongoClient = require('mongodb').MongoClient
+  var url = 'mongodb://localhost:27017/'
+
+  var desiredCity = $('#selectCity').find(":selected").text();
+  console.log(desiredCity)
+
+
+  MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
+    if (err) throw err
+    var dbo = db.db('mydb')
+
+    var query = { city: desiredCity}
+    dbo.collection('things').find(query).toArray(function(err, result) {
+      if (err) throw err
+      console.log(result)
+      db.close()
+    })
+  })
+  }
+
+
+  function helloWorld(){
+  }
+
+  $( document ).ready(function() {
+    var url =
+    'https://api.openaq.org/v1/countries'
+    $.getJSON(url, showResults)
+
+
+  $( "#slider-range" ).slider({
+		range: true,
+		min: 0,
+		max: 10,
+		values: [ 0, 10 ],
+		slide: function( event, ui ) {
+      console.log($('slider-range').slider("value"))
+		}
+	});
+})
+
+$("#sliderNum").change(function() {
+    $("#myRange").slider("value", $(this).val());
+});
+
+function showResults(response) {
+  for (i = 0; i < response.results.length; i++) { 
+    // $('#selectCountry').append('<option>'+response.results[i].name+ " (" + response.results[i].code + ") " + '</option>')
+    $('#selectCountry').append('<option>' + response.results[i].code + '</option>')
+  }
+}
+
+function showResults2(response) {
+  $('#selectCity').empty()
+  for (i = 0; i < response.results.length; i++) { 
+    $('#selectCity').append('<option>'+response.results[i].city+'</option>')
+  }
+}
+ 
+$(document).on('change', '#selectCountry', function(e) {
+    console.log(this.options[e.target.selectedIndex].text);
+    $('#countryText').text(this.options[e.target.selectedIndex].text)
+
+    var url = 'https://api.openaq.org/v1/locations?country=' + this.options[e.target.selectedIndex].text
+    $.getJSON(url, showResults2)
+});
+
+	var earth;
+	function initialize() {
+	  earth = new WE.map('earth_div');
+	  earth.setView([46.8011, 8.2266], 1);
+	  WE.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+		attribution: '© OpenStreetMap contributors'
+	  }).addTo(earth);
+
+	  // Start a simple rotation animation
+	  var before = null;
+	  requestAnimationFrame(function animate(now) {
+		  var c = earth.getPosition();
+		  var elapsed = before? now - before: 0;
+		  before = now;
+		  earth.setCenter([c[0], c[1] + 0.1*(elapsed/30)]);
+		  requestAnimationFrame(animate);
+	  });
+	}
+
+	$( function() {
+	  $( "#slider" ).slider();
+	} );
+
+	function myFunction() {
+  document.getElementById("myDropdown").classList.toggle("show");
+}
+
+	// Close the dropdown if the user clicks outside of it
+	window.onclick = function(event) {
+	if (!event.target.matches('.dropbtn')) {
+		var dropdowns = document.getElementsByClassName("dropdown-content");
+		var i;
+		for (i = 0; i < dropdowns.length; i++) {
+		var openDropdown = dropdowns[i];
+		if (openDropdown.classList.contains('show')) {
+			openDropdown.classList.remove('show');
+			console.log("Hello");
+		}
+		}
+	}
+	}
+  </script>
+</head>
+
+<body id="page-info"  onload="initialize()">
+	<main class="title">
+		<h1>
+			Past Air Future 
+		</h1>
+	</main>
+	
+	<button id="button1" onclick="runQuery()"><h2>HELLO</h2></button>
+
+	<div id="container">
+		<div class ="locations">
+			<div class = "list">
+          <h3 id="countryText">County Name</h3>
+          <h3 id="countryCode">Country Code</h3>
+          <h3 id="countryYear">County Year</h3>
+          
+          <form id="myForm">
+              <select id="selectCountry">
+                <option>Choose a country</option>
+              </select>
+            </form>
+
+          <form id="myForm">
+            <select id="selectCity">
+              <option>Choose a city</option>
+            </select>
+          </form>
+          
+          <form id="myForm">
+            <select id="selectYear">
+              <option>Choose the year</option>
+            </select>
+          </form>
+
+			</div>
+		</div>
+
+		<div class ="map">
+			<div id="earth_div"></div>
+		</div>
+	</div>
+
+	<div class ="timeline">
+      <div class="slidecontainer">
+          <p>Slider Number</p>
+          <input type="range" min="1" max="10" value="9" class="slider" id="myRange">
+          <!-- <div id="slider-range"></div> -->
+        </div>
+	</div>
+</body>
+</html>

@@ -1,26 +1,27 @@
 {
-  "name": "pastairfuture",
+  "name": "electron-quick-start",
   "version": "1.0.0",
-  "devDependencies": {
-    "electron": "^1.8.8"
-  },
+  "description": "A minimal Electron application",
+  "main": "main.js",
   "scripts": {
-    "start": "index.js"
+    "start": "electron ."
   },
-  "description": "A program for the modeling of past and future air quality data using complex data science equations.",
-  "main": "index.js",
+  "repository": "https://github.com/electron/electron-quick-start",
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "^4.0.7"
+  },
   "dependencies": {
-    "mime-types": "^2.1.24",
-    "mime-db": "^1.40.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/CUBigDataClass/PastAirFuture.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/CUBigDataClass/PastAirFuture/issues"
-  },
-  "homepage": "https://github.com/CUBigDataClass/PastAirFuture#readme"
+    "electron-reload": "^1.4.0",
+    "mongodb": "^3.2.3",
+    "openaq": "^0.1.0"
+  }
 }
