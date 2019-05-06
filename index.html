@@ -31,8 +31,6 @@
 		var myBool = false;
 		var myD3Array = [4,3,7,1,3,1,6,5,6,4,8,3,7,1,3,4,6,1,4,7,2,9,4,2,4,6,1,2,5,1]
 
-
-
 	// QUERY FUNCTION
 	// ----------------------------------------------------------------------------------------------------------------------------------
 	function runQuery(){
@@ -85,7 +83,7 @@
 			arrayOfAllDates.push(newlocalregex)
 		}
 
-		console.log("AHHH", arrayOfAllDates)
+		// console.log("AHHH", arrayOfAllDates)
 
 		MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
 			if (err) throw err
@@ -94,21 +92,28 @@
 			var query = { city: desiredCity }
 				dbo.collection('things').find(query).toArray(function(err, result) {
 					if (err) throw err
-					addMarker(result[0].latitude,result[0].longitude)
+					if(result.length == 0){
+						console.log("no data found")
+					}
+					else{
+						addMarker(result[0].latitude,result[0].longitude)
+						console.log("RESULT",result[0])
+						console.log("RESULT LNOG",result[0].longitude)
+					}
 					db.close()
 				})
 
 
-			for(i=0;i<arrayOfAllDates.length;i++){
-				console.log("ARRAY DATES - ", i,  " - ", arrayOfAllDates[i])
-				var query = { city: desiredCity, local: arrayOfAllDates[i] , parameter: "pm25"}
-				dbo.collection('things').find(query).toArray(function(err, result) {
-					if (err) throw err
-					console.log("RESULSASDASNDAS", i ,result)
-					db.close()
+			// for(i=0;i<arrayOfAllDates.length;i++){
+			// 	// console.log("ARRAY DATES - ", i,  " - ", arrayOfAllDates[i])
+			// 	var query = { city: desiredCity, local: arrayOfAllDates[i] , parameter: "pm25"}
+			// 	// dbo.collection('things').find(query).toArray(function(err, result) {
+			// 	// 	if (err) throw err
+			// 	// 	// console.log("RESULSASDASNDAS", i ,result)
+			// 	// 	db.close()
 					
-				})
-			}
+			// 	// })
+			// }
 		})
   }
 
