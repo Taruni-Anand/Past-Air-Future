@@ -7,8 +7,8 @@
 	<link rel='stylesheet' href='style.css'>
   <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
-  <link href="https://fonts.googleapis.com/css?family=Poppins|Roboto+Slab|Slabo+27px" rel="stylesheet">
-  
+	<link href="https://fonts.googleapis.com/css?family=Poppins|Roboto+Slab|Slabo+27px" rel="stylesheet">
+	
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -26,32 +26,94 @@
   <script type='javascript' src='slider.js'></script>
   
 	<script>
-  
-  function runQuery(){
-  var MongoClient = require('mongodb').MongoClient
-  var url = 'mongodb://localhost:27017/'
-
-  var desiredCity = $('#selectCity').find(":selected").text();
-  console.log(desiredCity)
+	
+	// GLOBAL VARIABLES
+		var myBool = false;
+		var myD3Array = [4,3,7,1,3,1,6,5,6,4,8,3,7,1,3,4,6,1,4,7,2,9,4,2,4,6,1,2,5,1]
 
 
-  MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
-    if (err) throw err
-    var dbo = db.db('mydb')
 
-    var query = { city: desiredCity}
-    dbo.collection('things').find(query).toArray(function(err, result) {
-      if (err) throw err
-      console.log(result)
-      db.close()
-    })
-  })
+	// QUERY FUNCTION
+	// ----------------------------------------------------------------------------------------------------------------------------------
+	function runQuery(){
+	
+		var arrayOfAllDates = new Array()
+		var singleMonthData = new Array()
+
+		var MongoClient = require('mongodb').MongoClient
+		var url = 'mongodb://localhost:27017/'
+
+		var desiredCity = $('#selectCity').find(":selected").text();
+		console.log(desiredCity)
+
+		var desiredYear = $('#selectYear').find(":selected").text();
+		console.log(desiredYear)
+		var localregex = new RegExp(".*" + desiredYear + ".*")
+
+		// for(k=1;k<10;k++){
+		// 	for(p=1;p<10;p++){
+		// 		var newlocalregex = new RegExp(".*" + desiredYear + "-0" + k + "-0" + p + ".*")
+		// 		arrayOfAllDates.push(newlocalregex)
+		// 		console.log(newlocalregex)
+		// 	}
+		// 	for(p=10;p<31;p++){
+		// 		var newlocalregex = new RegExp(".*" + desiredYear + "-0" + k + "-" + p + ".*")
+		// 		arrayOfAllDates.push(newlocalregex)
+		// 		console.log(newlocalregex)
+		// 	}
+		// }
+
+		// for(k=10;k<13;k++){
+		// 	for(p=1;p<10;p++){
+		// 		var newlocalregex = new RegExp(".*" + desiredYear + "-" + k + "-0" + p + ".*")
+		// 		arrayOfAllDates.push(newlocalregex)
+		// 		console.log(newlocalregex)
+		// 	}
+		// 	for(p=10;p<31;p++){
+		// 		var newlocalregex = new RegExp(".*" + desiredYear + "-" + k + "-" + p + ".*")
+		// 		arrayOfAllDates.push(newlocalregex)
+		// 		console.log(newlocalregex)
+		// 	}
+		// }
+
+		for(p=1;p<10;p++){
+			var newlocalregex = new RegExp(".*" + desiredYear + "-05" + "-0" + p + ".*")
+			arrayOfAllDates.push(newlocalregex)
+		}
+		for(p=10;p<31;p++){
+			var newlocalregex = new RegExp(".*" + desiredYear + "-05" + "-" + p + ".*")
+			arrayOfAllDates.push(newlocalregex)
+		}
+
+		console.log("AHHH", arrayOfAllDates)
+
+		MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
+			if (err) throw err
+			var dbo = db.db('mydb')
+
+			var query = { city: desiredCity }
+				dbo.collection('things').find(query).toArray(function(err, result) {
+					if (err) throw err
+					addMarker(result[0].latitude,result[0].longitude)
+					db.close()
+				})
+
+
+			for(i=0;i<arrayOfAllDates.length;i++){
+				console.log("ARRAY DATES - ", i,  " - ", arrayOfAllDates[i])
+				var query = { city: desiredCity, local: arrayOfAllDates[i] , parameter: "pm25"}
+				dbo.collection('things').find(query).toArray(function(err, result) {
+					if (err) throw err
+					console.log("RESULSASDASNDAS", i ,result)
+					db.close()
+					
+				})
+			}
+		})
   }
 
-
-  function helloWorld(){
-  }
-
+	// Grabs data from the API 
+	// ----------------------------------------------------------------------------------------------------------------------------------
   $( document ).ready(function() {
     var url =
     'https://api.openaq.org/v1/countries'
@@ -69,10 +131,25 @@
 	});
 })
 
+// D3 
+function drawChart(data) {
+   var svgWidth = 600, svgHeight = 400;
+   var margin = { top: 20, right: 20, bottom: 30, left: 50 };
+   var width = svgWidth - margin.left - margin.right;
+   var height = svgHeight - margin.top - margin.bottom;
+   var svg = d3.select('svg')
+     .attr("width", svgWidth)
+		 .attr("height", svgHeight);
+}
+
+// SLIDER
+// ----------------------------------------------------------------------------------------------------------------------------------
 $("#sliderNum").change(function() {
     $("#myRange").slider("value", $(this).val());
 });
 
+// Appends all country data to the dropdown
+// ----------------------------------------------------------------------------------------------------------------------------------
 function showResults(response) {
   for (i = 0; i < response.results.length; i++) { 
     // $('#selectCountry').append('<option>'+response.results[i].name+ " (" + response.results[i].code + ") " + '</option>')
@@ -80,6 +157,8 @@ function showResults(response) {
   }
 }
 
+// Appends all city data to the dropdown
+// ----------------------------------------------------------------------------------------------------------------------------------
 function showResults2(response) {
   $('#selectCity').empty()
   for (i = 0; i < response.results.length; i++) { 
@@ -87,6 +166,8 @@ function showResults2(response) {
   }
 }
  
+// After selecting a country, runs another call to the api to get all cities within that country
+// ----------------------------------------------------------------------------------------------------------------------------------
 $(document).on('change', '#selectCountry', function(e) {
     console.log(this.options[e.target.selectedIndex].text);
     $('#countryText').text(this.options[e.target.selectedIndex].text)
@@ -95,47 +176,48 @@ $(document).on('change', '#selectCountry', function(e) {
     $.getJSON(url, showResults2)
 });
 
-	var earth;
-	function initialize() {
-	  earth = new WE.map('earth_div');
-	  earth.setView([46.8011, 8.2266], 1);
-	  WE.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-		attribution: '© OpenStreetMap contributors'
-	  }).addTo(earth);
+$(document).on('change', '#selectCity', function(e) {
+    $('#cityText').text(this.options[e.target.selectedIndex].text)
+});
 
-	  // Start a simple rotation animation
-	  var before = null;
-	  requestAnimationFrame(function animate(now) {
-		  var c = earth.getPosition();
-		  var elapsed = before? now - before: 0;
-		  before = now;
-		  earth.setCenter([c[0], c[1] + 0.1*(elapsed/30)]);
-		  requestAnimationFrame(animate);
-	  });
-	}
+$(document).on('change', '#selectYear', function(e) {
+    $('#countryYear').text(this.options[e.target.selectedIndex].text)
+});
 
-	$( function() {
-	  $( "#slider" ).slider();
-	} );
+// Earth Visualization
 
-	function myFunction() {
-  document.getElementById("myDropdown").classList.toggle("show");
+var earth;
+
+function initialize() {
+	earth = new WE.map('earth_div');
+	earth.setView([46.8011, 8.2266], 1);
+	// WE.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+	// attribution: 'NASA'
+	// }).addTo(earth);
+	WE.tileLayer('https://webglearth.github.io/webglearth2-offline/{z}/{x}/{y}.jpg', {
+		tileSize: 256,
+		bounds: [[-85, -180], [85, 180]],
+		minZoom: 0,
+		maxZoom: 16,
+		tms: true
+	}).addTo(earth);
+
+	// Start a simple rotation animation
+	var before = null;
+	requestAnimationFrame(function animate(now) {
+		var c = earth.getPosition();
+		var elapsed = before? now - before: 0;
+		before = now;
+		earth.setCenter([c[0], c[1] + 0.1*(elapsed/60)]);
+		requestAnimationFrame(animate);
+	});
 }
 
-	// Close the dropdown if the user clicks outside of it
-	window.onclick = function(event) {
-	if (!event.target.matches('.dropbtn')) {
-		var dropdowns = document.getElementsByClassName("dropdown-content");
-		var i;
-		for (i = 0; i < dropdowns.length; i++) {
-		var openDropdown = dropdowns[i];
-		if (openDropdown.classList.contains('show')) {
-			openDropdown.classList.remove('show');
-			console.log("Hello");
-		}
-		}
-	}
-	}
+function addMarker(long,lat){
+	var marker = WE.marker([long, lat]).addTo(earth);
+	marker.bindPopup("<b>Hello world!</b><br>I am a popup.<br /><span style='font-size:10px;color:#999'>Tip: Another popup is hidden in Cairo..</span>", {maxWidth: 150, closeButton: true}).openPopup();
+}
+
   </script>
 </head>
 
@@ -152,7 +234,7 @@ $(document).on('change', '#selectCountry', function(e) {
 		<div class ="locations">
 			<div class = "list">
           <h3 id="countryText">County Name</h3>
-          <h3 id="countryCode">Country Code</h3>
+          <h3 id="cityText">Country Code</h3>
           <h3 id="countryYear">County Year</h3>
           
           <form id="myForm">
@@ -168,8 +250,14 @@ $(document).on('change', '#selectCountry', function(e) {
           </form>
           
           <form id="myForm">
+						<!-- June 29 2015 - April 9 2019 -->
             <select id="selectYear">
-              <option>Choose the year</option>
+							<option>Choose the year</option>
+							<option>2015</option>
+							<option>2016</option>
+							<option>2017</option>
+							<option>2018</option>
+							<option>2019</option>
             </select>
           </form>
 
@@ -178,14 +266,16 @@ $(document).on('change', '#selectCountry', function(e) {
 
 		<div class ="map">
 			<div id="earth_div"></div>
+			<div>
+				<svg></svg>
+			</div>
 		</div>
 	</div>
 
 	<div class ="timeline">
       <div class="slidecontainer">
-          <p>Slider Number</p>
-          <input type="range" min="1" max="10" value="9" class="slider" id="myRange">
-          <!-- <div id="slider-range"></div> -->
+					<p>Slider Number: </p> 
+					<input type="range" min="1" max="12" value="9" class="slider" id="myRange">
         </div>
 	</div>
 </body>

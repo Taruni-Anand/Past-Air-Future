@@ -130,3 +130,13 @@
 	background: #4caf50;
 	cursor: pointer;
 }
+
+/* D3 */
+
+.line-chart {
+	border: 1px solid lightgray;
+}
+
+.cesium-credit-textContainer {
+	display: none;
+}
