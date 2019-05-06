@@ -13,8 +13,8 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	
-  <script src="https://d3js.org/d3.v4.min.js"></script>
-  <!-- <script src="mongo.js"></script> -->
+	<script src="https://d3js.org/d3.v4.min.js"></script>  
+	<script defer src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<script src="http://www.webglearth.com/v2/api.js"></script>
 		
 	<script type="text/javascript">
@@ -29,7 +29,10 @@
 	
 	// GLOBAL VARIABLES
 		var myBool = false;
-		var myD3Array = [4,3,7,1,3,1,6,5,6,4,8,3,7,1,3,4,6,1,4,7,2,9,4,2,4,6,1,2,5,1]
+		// var myD3Array = [4,3,7,1,3,1,6,5,6,4,8,3,7,1,3,4,6,1,4,7,2,9,4,2,4,6,1,2,5,1]
+		var myD3Array = [4,3,7,1,3]
+		var Chart = require('chart.js');
+		var whichMonth = ''
 
 	// QUERY FUNCTION
 	// ----------------------------------------------------------------------------------------------------------------------------------
@@ -38,6 +41,7 @@
 		var arrayOfAllDates = new Array()
 		var singleMonthData = new Array()
 
+		makeGraph();
 		var MongoClient = require('mongodb').MongoClient
 		var url = 'mongodb://localhost:27017/'
 
@@ -75,11 +79,11 @@
 		// }
 
 		for(p=1;p<10;p++){
-			var newlocalregex = new RegExp(".*" + desiredYear + "-05" + "-0" + p + ".*")
+			var newlocalregex = new RegExp(".*" + desiredYear + "-" +  whichMonth + "-0" + p + ".*")
 			arrayOfAllDates.push(newlocalregex)
 		}
 		for(p=10;p<31;p++){
-			var newlocalregex = new RegExp(".*" + desiredYear + "-05" + "-" + p + ".*")
+			var newlocalregex = new RegExp(".*" + desiredYear + "-" + whichMonth + "-" + p + ".*")
 			arrayOfAllDates.push(newlocalregex)
 		}
 
@@ -90,8 +94,9 @@
 			var dbo = db.db('mydb')
 
 			var query = { city: desiredCity }
-				dbo.collection('things').find(query).toArray(function(err, result) {
+				dbo.collection('things').find(query).limit(1).toArray(function(err, result) {
 					if (err) throw err
+					console.log("resized result", result)
 					if(result.length == 0){
 						console.log("no data found")
 					}
@@ -104,54 +109,124 @@
 				})
 
 
-			// for(i=0;i<arrayOfAllDates.length;i++){
-			// 	// console.log("ARRAY DATES - ", i,  " - ", arrayOfAllDates[i])
-			// 	var query = { city: desiredCity, local: arrayOfAllDates[i] , parameter: "pm25"}
-			// 	// dbo.collection('things').find(query).toArray(function(err, result) {
-			// 	// 	if (err) throw err
-			// 	// 	// console.log("RESULSASDASNDAS", i ,result)
-			// 	// 	db.close()
+			for(i=0;i<arrayOfAllDates.length;i++){
+				console.log("ARRAY DATES - ", i,  " - ", arrayOfAllDates[i])
+				var query = { city: desiredCity, local: arrayOfAllDates[i] , parameter: "pm25"}
+				dbo.collection('things').find(query).limit(1).toArray(function(err, result) {
+					if (err) throw err
+					console.log("RESULSASDASNDAS", i ,result)
+					db.close()
 					
-			// 	// })
-			// }
+				})
+			}
 		})
   }
 
 	// Grabs data from the API 
 	// ----------------------------------------------------------------------------------------------------------------------------------
   $( document ).ready(function() {
-    var url =
+		
+		drawChart();
+
+		// URL for api call to populate dropdown
+		var url =
     'https://api.openaq.org/v1/countries'
     $.getJSON(url, showResults)
 
 
-  $( "#slider-range" ).slider({
-		range: true,
-		min: 0,
-		max: 10,
-		values: [ 0, 10 ],
-		slide: function( event, ui ) {
-      console.log($('slider-range').slider("value"))
+		// SLIDER
+		// ----------------------------------------------------------------------------------------------------------------------------------
+		var monthSlider = document.getElementById("myRange");
+		monthSlider.value = 7
+		var monthSliderOutput = document.getElementById("monthSliderOutput");
+		monthSliderOutput.innerHTML = "Choose a month:"; 
+		
+		monthSlider.oninput = function() {
+			var monthValueNow = ""
+			var monthValueName = ""
+			var muVal = this.value
+			console.log(muVal)
+			switch(muVal){
+				case("1"):
+					monthValueNow = "01"
+					monthValueName = "January"
+					break
+				case("2"):
+					monthValueNow = "02"
+					monthValueName = "February"
+					break
+				case("3"):
+					monthValueNow = "03"
+					monthValueName = "March"
+					break
+				case("4"):
+					monthValueNow = "04"
+					monthValueName = "April"
+					break
+				case("5"):
+					monthValueNow = "05"
+					monthValueName = "May"
+					break
+				case("6"):
+					monthValueNow = "06"
+					monthValueName = "June"
+					break
+				case("7"):
+					monthValueNow = "07"
+					monthValueName = "July"
+					break
+				case("8"):
+					monthValueNow = "08"
+					monthValueName = "August"
+					break
+				case("9"):
+					monthValueNow = "09"
+					monthValueName = "September"
+					break
+				case("10"):
+					monthValueNow = "10"
+					monthValueName = "October"
+					break
+				case("11"):
+					monthValueNow = "11"
+					monthValueName = "November"
+					break
+				case("12"):
+					monthValueNow = "12"
+					monthValueName = "December"
+					break
+				default:
+					monthValueNow = "07"
+					monthValueName = "July"
+					break
+			}
+			monthSliderOutput.innerHTML = "Slider value: "  + monthValueName;
+			whichMonth = monthValueNow
+			console.log("MONTH",whichMonth)
 		}
-	});
 })
 
-// D3 
-function drawChart(data) {
-   var svgWidth = 600, svgHeight = 400;
-   var margin = { top: 20, right: 20, bottom: 30, left: 50 };
-   var width = svgWidth - margin.left - margin.right;
-   var height = svgHeight - margin.top - margin.bottom;
-   var svg = d3.select('svg')
-     .attr("width", svgWidth)
-		 .attr("height", svgHeight);
-}
+	// Chart JS
+	function makeGraph(){
+		var ctx = document.getElementById('myChart');
+		var labelArray = []
+		for (i = 1; i < myD3Array.length+1; i++) { 
+					labelArray.push(i.toString())
+		}
 
-// SLIDER
-// ----------------------------------------------------------------------------------------------------------------------------------
-$("#sliderNum").change(function() {
-    $("#myRange").slider("value", $(this).val());
-});
+		var myLineChart = new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels: labelArray,
+        datasets: [{
+            label: 'My First dataset',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: myD3Array
+        }]
+    },
+	});
+	}
 
 // Appends all country data to the dropdown
 // ----------------------------------------------------------------------------------------------------------------------------------
@@ -190,15 +265,10 @@ $(document).on('change', '#selectYear', function(e) {
 });
 
 // Earth Visualization
-
 var earth;
-
 function initialize() {
 	earth = new WE.map('earth_div');
 	earth.setView([46.8011, 8.2266], 1);
-	// WE.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-	// attribution: 'NASA'
-	// }).addTo(earth);
 	WE.tileLayer('https://webglearth.github.io/webglearth2-offline/{z}/{x}/{y}.jpg', {
 		tileSize: 256,
 		bounds: [[-85, -180], [85, 180]],
@@ -217,12 +287,30 @@ function initialize() {
 		requestAnimationFrame(animate);
 	});
 }
-
+// Add marker to desired spot
 function addMarker(long,lat){
 	var marker = WE.marker([long, lat]).addTo(earth);
 	marker.bindPopup("<b>Hello world!</b><br>I am a popup.<br /><span style='font-size:10px;color:#999'>Tip: Another popup is hidden in Cairo..</span>", {maxWidth: 150, closeButton: true}).openPopup();
 }
 
+// D3
+function drawChart(data) {
+   var svgWidth = 600, svgHeight = 400;
+   var margin = { top: 20, right: 20, bottom: 30, left: 50 };
+   var width = svgWidth - margin.left - margin.right;
+   var height = svgHeight - margin.top - margin.bottom;
+   var svg = d3.select('svg')
+     .attr("width", svgWidth)
+		 .attr("height", svgHeight);
+	
+		var g = svg.append("g")
+		.attr("transform", 
+		"translate(" + margin.left + "," + margin.top + ")"
+		);
+
+	var x = d3.scaleTime().rangeRound([0, width]);
+	var y = d3.scaleLinear().rangeRound([height, 0]);
+}
   </script>
 </head>
 
@@ -272,15 +360,17 @@ function addMarker(long,lat){
 		<div class ="map">
 			<div id="earth_div"></div>
 			<div>
-				<svg></svg>
+				<!-- <svg></svg> -->
+				<canvas id="myChart" width="400" height="400"></canvas>
+
 			</div>
 		</div>
 	</div>
 
 	<div class ="timeline">
       <div class="slidecontainer">
-					<p>Slider Number: </p> 
-					<input type="range" min="1" max="12" value="9" class="slider" id="myRange">
+					<p id="monthSliderOutput">Slider Number: </p> 
+					<input type="range" min="1" max="12" value="7" class="slider" id="myRange">
         </div>
 	</div>
 </body>
