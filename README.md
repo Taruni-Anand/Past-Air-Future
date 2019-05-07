@@ -40,7 +40,7 @@ docker run -d -p 3000:3000 <name of image>
 ## Running mongo:
 
 
-- Ensure that mongodb is installed and reday to use.
+- Ensure that mongodb is installed and ready to use.
 - Download [dump-tar-file](https://drive.google.com/file/d/1pj9n9wFtuwIWhy5M4QChAJNEIUQcsmCH/view?usp=sharing)
 - Extract tar file using command: tar -xvzf dump.tar.gz
 - Import into a mongo database using ```mongoimport -d mydb -c things --type csv --file dump.csv --headerline```
