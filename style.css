@@ -63,7 +63,7 @@ body {
 }
 
 .search_categories {
-	font-size: 17px;
+	font-size: 15px;
 	/* margin-top:  */
 	width: 20%;
 	position: relative;
@@ -207,6 +207,15 @@ path {
 	stroke: steelblue;
 	stroke-width: 2;
 	fill: none;
+}
+
+.button2 {
+	background-color: #8cd790 !important;
+	margin-left: 2%;
+}
+
+.button1 {
+	margin-right: 2%;
 }
 
 .axis path,
