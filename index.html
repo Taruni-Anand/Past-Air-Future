@@ -33,6 +33,7 @@
 		var myD3Array = [4,3,7,1,3]
 		var Chart = require('chart.js');
 		var whichMonth = ''
+		var whichMonthName = ''
 
 	// QUERY FUNCTION
 	// ----------------------------------------------------------------------------------------------------------------------------------
@@ -51,6 +52,10 @@
 		var desiredYear = $('#selectYear').find(":selected").text();
 		console.log(desiredYear)
 		var localregex = new RegExp(".*" + desiredYear + ".*")
+
+		var currentSelected = document.getElementById("currentSelectionValues")
+		currentSelected.innerHTML = "The current selection: "  + desiredCity + " during " + whichMonthName + " of " + desiredYear + ".";
+
 
 		// for(k=1;k<10;k++){
 		// 	for(p=1;p<10;p++){
@@ -200,8 +205,9 @@
 					monthValueName = "July"
 					break
 			}
-			monthSliderOutput.innerHTML = "Slider value: "  + monthValueName;
+			monthSliderOutput.innerHTML = "Current Month: "  + monthValueName;
 			whichMonth = monthValueNow
+			whichMonthName = monthValueName
 			console.log("MONTH",whichMonth)
 		}
 })
@@ -268,7 +274,7 @@ $(document).on('change', '#selectYear', function(e) {
 var earth;
 function initialize() {
 	earth = new WE.map('earth_div');
-	earth.setView([46.8011, 8.2266], 1);
+	earth.setView([46.8011, 8.2266], 2.2);
 	WE.tileLayer('https://webglearth.github.io/webglearth2-offline/{z}/{x}/{y}.jpg', {
 		tileSize: 256,
 		bounds: [[-85, -180], [85, 180]],
@@ -315,57 +321,41 @@ function drawChart(data) {
 </head>
 
 <body id="page-info"  onload="initialize()">
-	<main class="title">
-		<h1>
-			Past Air Future 
-		</h1>
-	</main>
-	
-	<button id="button1" onclick="runQuery()"><h2>HELLO</h2></button>
-
-	<div id="container">
-		<div class ="locations">
-			<div class = "list">
-          <h3 id="countryText">County Name</h3>
-          <h3 id="cityText">Country Code</h3>
-          <h3 id="countryYear">County Year</h3>
-          
-          <form id="myForm">
-              <select id="selectCountry">
-                <option>Choose a country</option>
-              </select>
-            </form>
-
-          <form id="myForm">
-            <select id="selectCity">
-              <option>Choose a city</option>
-            </select>
-          </form>
-          
-          <form id="myForm">
-						<!-- June 29 2015 - April 9 2019 -->
-            <select id="selectYear">
-							<option>Choose the year</option>
-							<option>2015</option>
-							<option>2016</option>
-							<option>2017</option>
-							<option>2018</option>
-							<option>2019</option>
-            </select>
-          </form>
-
-			</div>
-		</div>
-
-		<div class ="map">
+	<div id="pastAirFuture"><h1>Past Air Future </h1></div>
+	<div class ="map">
 			<div id="earth_div"></div>
-			<div>
-				<!-- <svg></svg> -->
-				<canvas id="myChart" width="400" height="400"></canvas>
-
-			</div>
-		</div>
+			<div id="map_div"><canvas id="myChart"></canvas></div>
 	</div>
+
+			<div class="search_categories" id="sc1">
+					<div class="select">
+						 <select name="search_categories" id="selectCountry">
+								<option <option>Choose a country</option>
+							</select>
+					 </div>
+			 </div>
+
+			 <div class="search_categories" id="sc2">
+					<div class="select">
+						<select id="selectCity">
+								<option>Choose a city</option>
+							</select>
+					</div>
+			 </div>
+
+			 <div class="search_categories" id="sc3">
+					<div class="select">
+							<select id="selectYear">
+									<option>Choose the year</option>
+									<option>2015</option>
+									<option>2016</option>
+									<option>2017</option>
+									<option>2018</option>
+									<option>2019</option>
+								</select>
+					</div>
+			 </div>
+			
 
 	<div class ="timeline">
       <div class="slidecontainer">
@@ -373,5 +363,12 @@ function drawChart(data) {
 					<input type="range" min="1" max="12" value="7" class="slider" id="myRange">
         </div>
 	</div>
+	<div id="currentSelection">
+			<p id="currentSelectionValues">The current selection: </p>
+	</div>
+	<div id="submitButton">
+			<button id="button1" onclick="runQuery()"><h2>Submit</h2></button>
+	</div>
+	
 </body>
 </html>
